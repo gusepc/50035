@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="username-form">
+        <h1>Ingresa tu correo</h1>
+        <form action="">
+            <input type="email" id="username" required>
+            <button type="submit">Unirse al chat</button>
+        </form>
+    </div>
+
+    <div id="chat-form" style="display:none">
+        <h1>Sala de chat</h1>
+        <div id="chat-messages"></div>
+        <form action="">
+            <input type="text" id="message">
+            <button type="submit">Enviar</button>
+        </form>
+
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+ <script src="js/chat.js"></script>
+
+</body>
+</html>

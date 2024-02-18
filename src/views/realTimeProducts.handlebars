@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h1>Estos son todos los productos agregados hasta el momento</h1>
+
+    <form action"/realtimeproducts"  id="form" >
+        <label for="title">title</label>
+        <input id="title" ="text" value="Producto 11">
+        <label for="descrption">descrption</label>
+        <input id="description" type="text" value="Este es el producto prueba 11">
+        <label for="price">price</label>
+        <input id="price" type="number" value="110">
+        <label for="stock">stock</label>
+        <input id="stock" type="number" value="110">
+        <label for="status">status</label>
+        <input id="status" type="boolean" value="true">
+        <label for="category">category</label>
+        <input id="category" type="text" value="products">
+        <label for="code">code</label>
+        <input id="code" type="number" value="11">
+        <button id="button" type="submit">crear producto</button>
+    </form>
+    <div id="list-container" style="display: flex;align-content: space-between;flex-wrap: wrap;"">
+    </div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>
+
+</body>
+</html>
