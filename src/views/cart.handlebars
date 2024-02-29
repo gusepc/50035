@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{title}}</title>
+</head>
+<body>
+       
+       
+<div class="container">
+  <h1>Carrito {{cart._id}}</h1>
+  <div class="products-grid">
+    {{#each cart.products}}
+    <div class="product">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHrkkhVEQLIOZh2DB-L4Nty60TdWWS9eV6sgIkrvBFlQ&s" alt={{this.product.title}}>
+      <h2>{{this.product.title}}</h2>
+      <p>{{this.product.description}}</p>
+      <p>Categoría: {{this.product.category}}</p>
+      <p>Cantidad: {{this.quantity}}</p>
+      <span class="price">${{this.product.price }}</span>
+    </div>
+    {{/each}}
+  </div>
+  <div class="pagination">
+    <p >Total : $ </p>
+  </div>
+</div>
+<script>
+
+</script>
+
+
+
+</body>
+</html>

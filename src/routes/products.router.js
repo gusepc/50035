@@ -1,6 +1,6 @@
 import express from "express";
 import MongoProductManager from "../dao/Mongo/productManagerMong.js";
-
+import productModel from "../dao/models/products.model.js";
 
 
 const router = express.Router()
@@ -15,7 +15,6 @@ router.post("/api/products",async(req, res)=>{
         const newProduct = req.body
         let result = await productManager.addProduct(newProduct)
         res.send({result: "succes", payload: result})
-        
     } catch (error) {
         res.send("no se pudo completar tu peticion")
     }
@@ -27,8 +26,10 @@ router.post("/api/products",async(req, res)=>{
 
 router.get("/api/products",async(req, res)=>{
     try {
-        const products =  await productManager.getProducts()
-        res.send(products)
+
+const products =  await productManager.getProducts(req)
+        res.json(products)
+        
         
     } catch (error) {
         res.send("no se pudo completar tu petición")

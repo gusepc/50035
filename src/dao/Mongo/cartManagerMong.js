@@ -1,6 +1,7 @@
 import cartModel from "../models/carts.model.js";
-import MongoProductManager from "./productManagerMong.js";
-const productManager = new MongoProductManager()
+import productModel from "../models/products.model.js";
+// import MongoProductManager from "./productManagerMong.js";
+// const productManager = new MongoProductManager()
 class MongoCartManager {
 
     async addCart(cart){
@@ -13,35 +14,87 @@ class MongoCartManager {
     }
     async cartById(cId){
         try {
-            return await cartModel.findById(cId)
+            return await cartModel.findById(cId).lean()
         } catch (error) {
             return{error: error.message}
         }
     }
-    async updateCart(cId, pId) {
+    async addToCart(cId, products){
         try {
-            let product = await productManager.getProductById(pId)
             let cart = await cartModel.findById(cId)
-            let enCarrito = cart.products.find(p => p.producto === product.title)
-            if (enCarrito) {
-                return await cartModel.findOneAndUpdate(
-                    { _id: cId, "products.producto": product.title },
-                    { $inc: { "products.$.quantity": 1 } }
-                );
+            products.forEach(async e => {
+                let pId = e._id
+                let enCarrito = cart.products.findIndex(p => p.product._id.toString() === pId)
+  
+            if (enCarrito !== -1) {
+                cart.products[enCarrito].quantity += 1
+                
                 }
-            else {
-                return await cartModel.findOneAndUpdate(
-                    { _id: cId },
-                    { $addToSet: { products: { producto: product.title, quantity: 1 } } }
-                );
-            }
-
+                else {
+                    cart.products.push({ product: pId, quantity: 1 });
+                    }
+            });
+            await cart.save()
+            return cart
         } catch (error) {
+            return{error: error.message}
+        }
+    }
+    async updateCart(cId, pId, newQuantity) {
+        try {
             
+            let product = await productModel.findById(pId)
+            let cart = await cartModel.findById(cId)
+            let enCarrito = cart.products.findIndex(p => p.product._id.toString() === pId)
+  
+            if (enCarrito !== -1) {
+                cart.products[enCarrito].quantity += 1
+                if (newQuantity) {
+                    cart.products[enCarrito].quantity = newQuantity
+                }
+                }
+                else {
+                    cart.products.push({ product: pId, quantity: 1 });
+                    }
+                    await cart.save();
+                    return `se anadio ${product}`
+        } catch (error) {
+            return{error: error.message}
         }
 
 
         
+    }
+    async deleteProduct(cId, pId){
+        try {
+            let product = await productModel.findById(pId)
+            let cart = await cartModel.findById(cId)
+            let enCarrito = cart.products.findIndex(p => p.product._id.toString() === pId);
+            
+            if (enCarrito !== -1) {
+                cart.products.splice(enCarrito, 1)
+                await cart.save();
+                return (`se elimino ${product}`)
+            }
+            else {
+                console.log("no exite ese producto en el carrito");
+                return "no exite ese producto en el carrito"
+            }
+            
+        } catch (error) {
+            return{error: error.message}
+        }
+    }
+    async emptyCart(cId){
+        try {
+            let cart = await cartModel.findById(cId)
+            cart.products = []
+            await cart.save()
+            return cart
+        } catch (error) {
+            return{error: error.message}
+
+        }
     }
 }
 
