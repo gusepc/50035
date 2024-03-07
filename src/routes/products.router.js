@@ -1,7 +1,7 @@
 import express from "express";
 import MongoProductManager from "../dao/Mongo/productManagerMong.js";
 import productModel from "../dao/models/products.model.js";
-
+import auth from "../midlewares/auth.js";
 
 const router = express.Router()
 router.use(express.json())
@@ -10,7 +10,7 @@ const productManager = new MongoProductManager()
 
 //Create
 
-router.post("/api/products",async(req, res)=>{
+router.post("/api/products", async(req, res)=>{
     try {
         const newProduct = req.body
         let result = await productManager.addProduct(newProduct)
@@ -24,7 +24,7 @@ router.post("/api/products",async(req, res)=>{
 
 //read
 
-router.get("/api/products",async(req, res)=>{
+router.get("/api/products", auth,async(req, res)=>{
     try {
 
 const products =  await productManager.getProducts(req)
@@ -37,7 +37,7 @@ const products =  await productManager.getProducts(req)
 
 })
 
-router.get('/api/products/:id',async(req, res)=>{
+router.get('/api/products/:id', auth,async(req, res)=>{
     try {
         let pId = req.params.id
         let productById = await productManager.getProductById(pId)
@@ -68,10 +68,6 @@ router.put('/api/products/:id', async (req, res)=>{
         res.send("no se pudo completar tu peticion");
     }
 })
-
-
-
-
 
 //delete
 router.delete('/api/products/:id', async(req, res)=>{

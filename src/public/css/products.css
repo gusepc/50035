@@ -81,3 +81,30 @@ body {
   .pagination a:hover {
     background-color: #0056b3;
   }
+  .navbar {
+    background-color: #333; 
+    padding: 10px 20px; 
+    color: #fff; 
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .profile-btn,
+  .logout-btn {
+    padding: 8px 16px; 
+    background-color: #007bff; 
+    color: #fff; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    text-decoration: none;
+  }
+  
+  .profile-btn:hover{
+    background-color: #0056b3; 
+  }
+  .logout-btn:hover {
+    background-color: #b30000; 
+  }
+  

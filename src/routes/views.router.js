@@ -1,13 +1,17 @@
 import express from "express";
 import MongoProductManager from "../dao/Mongo/productManagerMong.js";
 import MongoCartManager from "../dao/Mongo/cartManagerMong.js"
+import auth from "../midlewares/auth.js";
+
 const router = express.Router()
 router.use(express.json())
 const productManager = new MongoProductManager()
 const cartManager = new MongoCartManager()
 
 
-router.get('/', async(req, res) => {
+
+
+router.get('/', auth, async(req, res) => {
     let products =  await productManager.getProducts(req)
     let status = 'error'
     if(products.docs){
@@ -27,31 +31,25 @@ router.get('/', async(req, res) => {
     })
 
 })
-router.get('/products', async (req, res)=>{
+router.get('/products', auth, async (req, res)=>{
     let products =  await productManager.getProducts(req)
-    console.log(products.page)
     if (products.isValid) {
         res.render("products", {
             layout: "main",
             title: "products",
             product: products,
-            style: "products.css"
+            style: "products.css",
+            user: req.session.user
             
         })  
     }
     else{
         res.send(`la pagina ${req.query.page} no existe`)
     }
-    // else{
-    //     res.redirect("https://c0.klipartz.com/pngpicture/10/633/gratis-png-pocoyo-pocoyo-posando.png")
-    // }
-    
-    
 })
-router.get('/carts/:cid', async (req, res)=>{
+router.get('/carts/:cid', auth, async (req, res)=>{
     let cId = req.params.cid
     const cart = await cartManager.cartById(cId)
-    console.log(cart.products);
 if (cart._id) {
     res.render("cart", {
         layout: "main",
@@ -64,21 +62,16 @@ if (cart._id) {
 else{
     res.send(`${cId} no existe`)
 }
-// else{
-//     res.redirect("https://c0.klipartz.com/pngpicture/10/633/gratis-png-pocoyo-pocoyo-posando.png")
-// }
-    
-    
 })
 
-router.get('/realtimeproducts', (req, res)=>{
+router.get('/realtimeproducts', auth, (req, res)=>{
         res.render("realTimeProducts", {
             layout: "main",
             title: "realtimeproducts"
         })
 })
 
-router.get('/chat', (req, res)=>{
+router.get('/chat', auth,(req, res)=>{
     res.render("chat"), {
         layout: "main",
         title: "LatinChat"

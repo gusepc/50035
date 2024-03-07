@@ -1,6 +1,6 @@
 import express from "express";
 import MongoCartManager from "../dao/Mongo/cartManagerMong.js";
-
+import auth from "../midlewares/auth.js";
 
 const router = express.Router()
 router.use(express.json())
@@ -19,7 +19,7 @@ router.post("/api/carts",async(req, res)=>{
 
 })
 //read
-router.get("/api/carts/:cid", async(req, res)=>{
+router.get("/api/carts/:cid", auth, async(req, res)=>{
     try {
         const cId = req.params.cid
         let cartById = await cartManager.cartById(cId)
