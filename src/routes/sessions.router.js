@@ -1,9 +1,12 @@
 import express from "express";
-const router = express.Router()
-router.use(express.json())
 import userModel from "../dao/models/usser.model.js";
 import auth from "../midlewares/auth.js"
+import {createHash, isValidatePassword} from "../utils.js";
+import  passport from "passport";
+import { log } from "console";
 
+const router = express.Router()
+router.use(express.json())
 
 router.get('/api/sessions/login', (req, res)=>{
     if (!req.session.user) {
@@ -18,17 +21,47 @@ router.get('/api/sessions/login', (req, res)=>{
        }
 })
 
-router.post('/api/sessions/login', async (req, res)=>{
+
+router.get('/api/sessions/login/github', passport.authenticate('github', {scope: ["user:email"]}), async(req, res)=>{
+})
+
+router.get('/api/sessions/githubcallback', passport.authenticate("github", {failureRedirect:"/api/sessions/error"}), async(req, res)=>{
+console.log(req.user);
     try {
-        const {email, password} = req.body 
-        let acces = await userModel.findOne({email: email, password: password})
-        if (acces) {
+        if(req.user){
+                req.session.user = {
+                    first_name : req.user.first_name,
+                    last_name : req.user.last_name,
+                    age: req.user.age,
+                    email: req.user.email}
+               
+                if (req.user.email === "adminCoder@coder.com") {
+                    req.session.user.rol = "admin"
+                }
+                else{
+                    req.session.user.rol = "user"
+                }
+                res.redirect('/products')
+            }
+            else{
+                res.status(400).send("lo sentimos, el usuario o la contraseña son incorrectos")
+            }
+        } catch (error) {
+            res.send("algo salio mal")
+        }
+})
+
+
+router.post('/api/sessions/login', passport.authenticate('login', {failureRedirect: "/api/sessions/register"}), async (req, res)=>{
+    try {
+    if(req.user){
             req.session.user = {
-                first_name : acces.first_name,
-                last_name : acces.last_name,
-                age: acces.age,
-                email: acces.email}
-            if (acces.email === "adminCoder@coder.com") {
+                first_name : req.user.first_name,
+                last_name : req.user.last_name,
+                age: req.user.age,
+                email: req.user.email}
+           
+            if (req.user.email === "adminCoder@coder.com") {
                 req.session.user.rol = "admin"
             }
             else{
@@ -37,12 +70,13 @@ router.post('/api/sessions/login', async (req, res)=>{
             res.redirect('/products')
         }
         else{
-            res.send("lo sentimos, el usuario o la contraseña son incorrectos")
+            res.status(400).send("lo sentimos, el usuario o la contraseña son incorrectos")
         }
     } catch (error) {
         res.send("algo salio mal")
     }
-       
+
+ 
 
 })
 
@@ -70,20 +104,26 @@ router.get('/api/sessions/register', (req, res)=>{
        }
 })
 
-router.post("/api/sessions/register", async (req, res) => {
+router.post("/api/sessions/register", passport.authenticate("register", {failureRedirect: "/api/sessions/register"}), async (req, res) => {
 
-        try {
-            const { first_name, last_name, email, age, password } = req.body
-            if (!first_name || !last_name || !email || !age || !password ) {
-                res.send("Todos los campos son obligatorios")
-            }
-            userModel.create({ first_name, last_name, email, age, password })
-            await userModel.save
-    
-            res.redirect("/api/sessions/login")  
-        } catch (error) {
-            res.send("Error de registro")
-        }  
+    // res.send("usuario registrado")
+    res.redirect("/api/sessions/login") 
+        // try {
+        //     const { first_name, last_name, email, age, password } = req.body
+        //     if (!first_name || !last_name || !email || !age || !password ) {
+        //         res.send("Todos los campos son obligatorios")
+        //     }
+        //     await userModel.create({ 
+        //         first_name,
+        //         last_name,
+        //         email,
+        //         age,
+        //         password : createHash(password)})
+        //     // await userModel.save
+        //     res.redirect("/api/sessions/login")  
+        // } catch (error) {
+        //     res.send("Error de registro")
+        // }  
 })
 
 

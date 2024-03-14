@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser"
 import { Server } from "socket.io"
 import {engine} from "express-handlebars"
 import MongoStore from "connect-mongo"
+import passport from "passport"
+import initializePassport from "./src/config/passport.config.js"
 
 import productsRouter from "./src/routes/products.router.js"
 import cartsRouter from "./src/routes/carts.router.js"
@@ -28,6 +30,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 app.use("/", productsRouter)
 app.use("/", cartsRouter)

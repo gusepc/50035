@@ -61,3 +61,25 @@ button:hover {
 .profile-details strong {
     font-weight: bold;
 }
+
+.github-login-button {
+    display: inline-block;
+    background-color: #007bff; 
+    color: #ffffff; 
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px; 
+    border-radius: 5px;
+    transition: background-color 0.3s ease; 
+}
+
+.github-login-button:hover {
+    background-color: #0056b3; 
+}
+
+
+.github-login-button svg {
+    vertical-align: middle; 
+    margin-right: 5px; 
+}
