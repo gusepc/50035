@@ -3,8 +3,9 @@ import local from "passport-local"
 import userModel from "../dao/models/usser.model.js"
 import { createHash, isValidatePassword } from "../utils.js"
 import GitHubStrategy from "passport-github2"
+import MongoCartManager from "../dao/Mongo/cartManagerMong.js";
 
-
+const cartManager = new MongoCartManager()
 
 const LocalStrategy = local.Strategy
 
@@ -18,7 +19,7 @@ passport.use('github', new GitHubStrategy({
 
     try {
         let user = await userModel.findOne({email: profile._json.email || profile._json.id})
-    
+        let cart = await cartManager.addCart()
         if (user) {
     
             return done(null, user)
@@ -29,8 +30,9 @@ passport.use('github', new GitHubStrategy({
             last_name :'',
             email : profile._json.email || profile._json.id,
             age: '',
-            password : ''
-       })
+            password : '',
+            cart: cart}
+       )
     
         return done(null, result)
     
@@ -44,11 +46,9 @@ passport.use('github', new GitHubStrategy({
     passport.use('login', new LocalStrategy(
         {passReqToCallback: true, usernameField: "email"}, async(req, username, password, done) => {
 
-console.log(username, password);
     try {
         let user = await userModel.findOne({email: username})
         let isValidate = isValidatePassword(user, password)
-        console.log(user);
         if (user && isValidate){
                 return done(null, user)
         }
@@ -63,7 +63,8 @@ console.log(username, password);
 passport.use('register', new LocalStrategy(
     {passReqToCallback: true, usernameField: "email"}, async(req,username, password, done) => {
     const { first_name, last_name, email, age} = req.body
-
+    let cart = await cartManager.addCart()
+    console.log(cart);
 try {
     let user = await userModel.findOne({email: username})
 
@@ -77,8 +78,9 @@ try {
         last_name,
         email,
         age,
-        password : createHash(password)})
-
+        password : createHash(password),
+        cart: cart})
+    console.log(result);
     return done(null, result)
 
 } catch (error) {

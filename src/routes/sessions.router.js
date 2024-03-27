@@ -55,18 +55,21 @@ console.log(req.user);
 router.post('/api/sessions/login', passport.authenticate('login', {failureRedirect: "/api/sessions/register"}), async (req, res)=>{
     try {
     if(req.user){
+        // console.log(req.user);
             req.session.user = {
                 first_name : req.user.first_name,
                 last_name : req.user.last_name,
                 age: req.user.age,
-                email: req.user.email}
+                email: req.user.email,
+                role: req.user.role,
+                cart: req.user.cart}
            
             if (req.user.email === "adminCoder@coder.com") {
-                req.session.user.rol = "admin"
+                req.session.user.role = "admin"
             }
-            else{
-                req.session.user.rol = "user"
-            }
+            // else{
+            //     req.session.user.role = "user"
+            // }
             res.redirect('/products')
         }
         else{
@@ -89,6 +92,16 @@ router.get('/api/sessions/profile', auth ,(req, res)=>{
         user: req.session.user
     })  
 })
+router.get('/api/sessions/current', auth ,(req, res)=>{
+
+    res.render("profile", {
+        layout: "main",
+        title: "profile",
+        style: "styles.css",
+        user: req.session.user
+    })  
+})
+
 
 router.get('/api/sessions/register', (req, res)=>{
     if (!req.session?.user) {

@@ -33,6 +33,7 @@ router.get('/', auth, async(req, res) => {
 })
 router.get('/products', auth, async (req, res)=>{
     let products =  await productManager.getProducts(req)
+
     if (products.isValid) {
         res.render("products", {
             layout: "main",
@@ -49,8 +50,12 @@ router.get('/products', auth, async (req, res)=>{
 })
 router.get('/carts/:cid', auth, async (req, res)=>{
     let cId = req.params.cid
+    
     const cart = await cartManager.cartById(cId)
-if (cart._id) {
+if (cart._id != req.session.user.cart._id) {
+        res.send(`${cId} no es tu carrito`)
+    }
+else if (cart._id) {
     res.render("cart", {
         layout: "main",
         title: "cart",
@@ -62,6 +67,9 @@ if (cart._id) {
 else{
     res.send(`${cId} no existe`)
 }
+
+
+
 })
 
 router.get('/realtimeproducts', auth, (req, res)=>{
