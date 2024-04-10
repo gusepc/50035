@@ -1,5 +1,5 @@
 import { log } from "console"
-import messageModel from "../dao/models/messages.model.js"
+import messageModel from "../dao/Mongo/models/messages.model.js"
 const socketChat = async(socketServer) => {
 
     

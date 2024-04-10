@@ -1,6 +1,6 @@
 import  passport  from "passport"
 import local from "passport-local"
-import userModel from "../dao/models/usser.model.js"
+import userModel from "../dao/Mongo/models/usser.model.js"
 import { createHash, isValidatePassword } from "../utils.js"
 import GitHubStrategy from "passport-github2"
 import MongoCartManager from "../dao/Mongo/cartManagerMong.js";
@@ -24,7 +24,6 @@ passport.use('github', new GitHubStrategy({
     
             return done(null, user)
         }
-    
        let result = await userModel.create({ 
             first_name : profile._json.name,
             last_name :'',

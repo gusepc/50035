@@ -12,7 +12,7 @@
   <nav class="navbar">
     <span class="greeting">Bienvenido, {{user.first_name}} {{user.last_name}}!</span>
      <a href="/api/sessions/profile" class="profile-btn">Perfil</a>
-     <a href="carts/{{user.cart._id}}" class="profile-btn">Carrito</a>
+     <a href="carts/{{user.cart}}" class="profile-btn">Carrito</a>
   <a href="/api/sessions/logout" class="logout-btn">Cerrar sesión</a>
   <span class="greeting">Rol: {{user.role}}</span>
   </nav>

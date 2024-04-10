@@ -2,7 +2,7 @@ import express from "express"
 import session from "express-session" 
 import mongoose from "mongoose"
 import path from "path"
-import cookieParser from "cookie-parser"
+// import cookieParser from "cookie-parser"
 import { Server } from "socket.io"
 import {engine} from "express-handlebars"
 import MongoStore from "connect-mongo"
@@ -13,9 +13,13 @@ import productsRouter from "./src/routes/products.router.js"
 import cartsRouter from "./src/routes/carts.router.js"
 import viewsRouter from "./src/routes/views.router.js"
 import sessionRouter from "./src/routes/sessions.router.js"
-import productModel from "./src/dao/models/products.model.js"
+
+// import productModel from "./src/dao/models/products.model.js"
 import socketChat from "./src/socket/chat.contection.js"
 import socketP from "./src/socket/realTimeP.conection.js"
+
+import config from "./src/config/config.js"
+
 const app = express()
 
 app.use(express.json())
@@ -25,7 +29,7 @@ app.use(express.static(path.join("src/public")))
 
 app.use(session({
     store: MongoStore.create({
-    mongoUrl: "mongodb+srv://gustavofloresenciso:12345epc@ecommerce.l3fhqou.mongodb.net/ecommerce?retryWrites=true&w=majority"}),
+    mongoUrl: config.mongoURL}),
     secret: "CoderSecret",
     resave: false,
     saveUninitialized: false,
@@ -46,7 +50,7 @@ app.set('views', 'src/views')
 
 
 
-const httpServer = app.listen(8080,()=>console.log("server started"));
+const httpServer = app.listen(config.port,()=>console.log("server started"));
 
 
 
@@ -62,3 +66,4 @@ mongoose.connect("mongodb+srv://gustavofloresenciso:12345epc@ecommerce.l3fhqou.m
 const socketServer = new Server(httpServer)
 socketP(socketServer)
 socketChat(socketServer)
+

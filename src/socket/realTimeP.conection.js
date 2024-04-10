@@ -1,4 +1,4 @@
-import productModel from "../dao/models/products.model.js"
+import productModel from "../dao/Mongo/models/products.model.js"
 const socketP = async(socketServer) => {
 
 

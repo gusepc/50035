@@ -1,7 +1,6 @@
-import cartModel from "../models/carts.model.js";
-import productModel from "../models/products.model.js";
-// import MongoProductManager from "./productManagerMong.js";
-// const productManager = new MongoProductManager()
+import cartModel from "./models/carts.model.js"
+import productModel from "./models/products.model.js";
+
 class MongoCartManager {
 
     async addCart(cart){
@@ -70,8 +69,10 @@ class MongoCartManager {
             let product = await productModel.findById(pId)
             let cart = await cartModel.findById(cId)
             let enCarrito = cart.products.findIndex(p => p.product._id.toString() === pId);
+ 
             
             if (enCarrito !== -1) {
+                console.log(enCarrito);
                 cart.products.splice(enCarrito, 1)
                 await cart.save();
                 return (`se elimino ${product}`)
